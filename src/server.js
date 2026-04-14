@@ -1,6 +1,7 @@
 import express from "express";
 import "dotenv/config";
 import cors from "cors";
+import { errors } from "celebrate";
 import { connectMongoDB } from "./db/connectMongoDB.js";
 import { logger } from "./middleware/logger.js";
 import { notFoundHandler } from "./middleware/notFoundHandler.js";
@@ -17,12 +18,17 @@ app.use(cors());
 
 app.use(notesRoutes);
 app.use(notFoundHandler);
+app.use(errors());
 app.use(errorHandler);
 
 // підключення до MongoDB
-await connectMongoDB();
+const startServer = async () => {
+  await connectMongoDB();
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+  // Start server
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+};
+
+startServer();
